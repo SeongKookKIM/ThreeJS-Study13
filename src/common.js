@@ -11,6 +11,7 @@ export const cm2 = {
   pillarColor: "#071d28",
   floorColor: "#111",
   barColor: "#441c1d",
+  glassColor: "#9fdfff",
 };
 
 export const geo = {
@@ -18,6 +19,7 @@ export const geo = {
   floor: new BoxGeometry(200, 1, 200),
   bar: new BoxGeometry(0.1, 0.3, 1.2 * 21),
   sideLight: new SphereGeometry(0.1, 6, 6),
+  glass: new BoxGeometry(1.2, 0.05, 1.2),
 };
 
 export const mat = {
@@ -32,5 +34,15 @@ export const mat = {
   }),
   sideLight: new MeshPhongMaterial({
     color: cm2.lightColor,
+  }),
+  glass1: new MeshPhongMaterial({
+    color: cm2.glassColor,
+    transparent: true,
+    opacity: 0.1,
+  }),
+  glass2: new MeshPhongMaterial({
+    color: cm2.glassColor,
+    transparent: true,
+    opacity: 0.3,
   }),
 };

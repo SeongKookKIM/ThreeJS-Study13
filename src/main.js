@@ -5,6 +5,7 @@ import { Pillar } from "./Pillar";
 import { Floor } from "./Floor";
 import { Bar } from "./Bar";
 import { SideLight } from "./SideLight";
+import { Glass } from "./Glass";
 
 // ----- 주제: The Bridge 게임 만들기
 
@@ -71,7 +72,8 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
 // 물체만들기
-const galssUnitSize = 1.2;
+const glassUnitSize = 1.2;
+const numberOfglass = 10; //유리판 갯수
 
 // 바닥
 const floor = new Floor({
@@ -83,13 +85,13 @@ const pillar1 = new Pillar({
   name: "pillar",
   x: 0,
   y: 5.5,
-  z: -galssUnitSize * 12 - galssUnitSize / 2,
+  z: -glassUnitSize * 12 - glassUnitSize / 2,
 });
 const pillar2 = new Pillar({
   name: "pillar",
   x: 0,
   y: 5.5,
-  z: galssUnitSize * 12 + galssUnitSize / 2,
+  z: glassUnitSize * 12 + glassUnitSize / 2,
 });
 
 // Bar(바)
@@ -122,14 +124,46 @@ for (let i = 0; i < 49; i++) {
   new SideLight({
     name: "sideLight",
     container: bar1.mesh,
-    z: i * 0.5 - galssUnitSize * 10,
+    z: i * 0.5 - glassUnitSize * 10,
   });
 }
 for (let i = 0; i < 49; i++) {
   new SideLight({
     name: "sideLight",
     container: bar4.mesh,
-    z: i * 0.5 - galssUnitSize * 10,
+    z: i * 0.5 - glassUnitSize * 10,
+  });
+}
+
+// 유리판
+let glassTypeNumber = 0; //강화유리를 0 or 1로 만듬
+let glassTypes = [];
+
+for (let i = 0; i < numberOfglass; i++) {
+  glassTypeNumber = Math.round(Math.random());
+
+  switch (glassTypeNumber) {
+    case 0:
+      glassTypes = ["normal", "strong"];
+      break;
+    case 1:
+      glassTypes = ["strong", "normal"];
+      break;
+  }
+
+  const glass1 = new Glass({
+    name: `glass-${glassTypes[0]}`,
+    x: -1,
+    y: 10.5,
+    z: i * glassUnitSize * 2 - glassUnitSize * 9,
+    type: glassTypes[0],
+  });
+  const glass2 = new Glass({
+    name: `glass-${glassTypes[0]}`,
+    x: 1,
+    y: 10.5,
+    z: i * glassUnitSize * 2 - glassUnitSize * 9,
+    type: glassTypes[1],
   });
 }
 
