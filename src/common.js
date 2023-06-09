@@ -21,6 +21,7 @@ export const cm2 = {
   floorColor: "#111",
   barColor: "#441c1d",
   glassColor: "#9fdfff",
+  step: 0,
 };
 
 export const geo = {

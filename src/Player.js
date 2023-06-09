@@ -6,8 +6,12 @@ export class Player extends Stuff {
   constructor(info) {
     super(info);
 
+    this.width = 0.5;
+    this.heigh = 0.5;
+    this.depth = 0.5;
+
     this.mesh = new Mesh(
-      new BoxGeometry(0.5, 0.5, 0.5),
+      new BoxGeometry(this.width, this.heigh, this.depth),
       new MeshBasicMaterial({
         transparent: true,
         opacity: 0,
@@ -31,13 +35,14 @@ export class Player extends Stuff {
       this.modelMesh.animations = glb.animations;
       cm1.mixer = new AnimationMixer(this.modelMesh);
       this.actions = [];
-      this.actions[0] = cm1.mixer.clipAction(this.modelMesh.animations[0]); //Default
+      this.actions[0] = cm1.mixer.clipAction(this.modelMesh.animations[0]); // default
       this.actions[1] = cm1.mixer.clipAction(this.modelMesh.animations[1]); // fall
-      this.actions[2] = cm1.mixer.clipAction(this.modelMesh.animations[2]); //Jump
-
+      this.actions[2] = cm1.mixer.clipAction(this.modelMesh.animations[2]); // jump
       this.actions[2].repetitions = 1;
 
       this.actions[0].play();
+
+      this.setCannonBody();
     });
 
     // this.mesh = new Mesh(this.geometry, this.matrial);

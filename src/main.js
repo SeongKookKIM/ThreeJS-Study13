@@ -1,7 +1,8 @@
-import * as THREE from "three";
 import { cm1, cm2 } from "./common";
+import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { gsap } from "gsap";
 import { Pillar } from "./Pillar";
 import { Floor } from "./Floor";
 import { Bar } from "./Bar";
@@ -81,26 +82,17 @@ cm1.world.gravity.set(0, -10, 0);
 const defaultContactMaterial = new CANNON.ContactMaterial(
   cm1.defaultMaterial,
   cm1.defaultMaterial,
-  {
-    friction: 0.3,
-    restitution: 0.2,
-  }
+  { friction: 0.3, restitution: 0.2 }
 );
 const glassDefaultContactMaterial = new CANNON.ContactMaterial(
   cm1.glassMaterial,
   cm1.defaultMaterial,
-  {
-    friction: 1,
-    restitution: 0,
-  }
+  { friction: 1, restitution: 0 }
 );
 const playerGlassContactMaterial = new CANNON.ContactMaterial(
   cm1.playerMaterial,
   cm1.glassMaterial,
-  {
-    friction: 1,
-    restitution: 0,
-  }
+  { friction: 1, restitution: 0 }
 );
 cm1.world.defaultContactMaterial = defaultContactMaterial;
 cm1.world.addContactMaterial(glassDefaultContactMaterial);
@@ -109,6 +101,7 @@ cm1.world.addContactMaterial(playerGlassContactMaterial);
 // 물체만들기
 const glassUnitSize = 1.2;
 const numberOfglass = 10; //유리판 갯수
+const objects = [];
 
 // 바닥
 const floor = new Floor({
@@ -128,6 +121,7 @@ const pillar2 = new Pillar({
   y: 5.5,
   z: glassUnitSize * 12 + glassUnitSize / 2,
 });
+objects.push(pillar1, pillar2);
 
 // Bar(바)
 const bar1 = new Bar({
@@ -173,6 +167,10 @@ for (let i = 0; i < 49; i++) {
 // 유리판
 let glassTypeNumber = 0; //강화유리를 0 or 1로 만듬
 let glassTypes = [];
+const glassZ = [];
+for (let i = 0; i < numberOfglass; i++) {
+  glassZ.push(-(i * glassUnitSize * 2 - glassUnitSize * 9));
+}
 
 for (let i = 0; i < numberOfglass; i++) {
   glassTypeNumber = Math.round(Math.random());
@@ -190,16 +188,22 @@ for (let i = 0; i < numberOfglass; i++) {
     name: `glass-${glassTypes[0]}`,
     x: -1,
     y: 10.5,
-    z: i * glassUnitSize * 2 - glassUnitSize * 9,
+    z: glassZ[i],
     type: glassTypes[0],
+    cannonMaterial: cm1.glassMaterial,
+    step: i + 1,
   });
   const glass2 = new Glass({
     name: `glass-${glassTypes[1]}`,
     x: 1,
     y: 10.5,
-    z: i * glassUnitSize * 2 - glassUnitSize * 9,
+    z: glassZ[i],
     type: glassTypes[1],
+    cannonMaterial: cm1.glassMaterial,
+    step: i + 1,
   });
+
+  objects.push(glass1, glass2);
 }
 
 // 플레이어
@@ -209,7 +213,10 @@ const player = new Player({
   y: 10.9,
   z: 13,
   rotationY: Math.PI,
+  cannonMaterial: cm1.playerMaterial,
+  mass: 30,
 });
+objects.push(player);
 
 // Raycaster
 const raycaster = new THREE.Raycaster();
@@ -220,14 +227,39 @@ function checkInterSects() {
 
   const interSects = raycaster.intersectObjects(cm1.scene.children);
   for (const item of interSects) {
-    checkClickedObject(item.object.name);
+    checkClickedObject(item.object);
     break;
   }
 }
-function checkClickedObject(objectName) {
+function checkClickedObject(mesh) {
   // console.log(objectName.indexOf("glass")); glass라는 이름을 가지고 있으면 숫자 0이 찍히고 없으면 -1이 찍힘
-  if (objectName.indexOf("glass") >= 0) {
+  if (mesh.name.indexOf("glass") >= 0) {
     // 유리창을 클릭했을 경우
+    if (mesh.step - 1 === cm2.step) {
+      cm2.step++;
+      // console.log(cm2.step);
+
+      switch (mesh.type) {
+        case "normal":
+          console.log("normal");
+
+          break;
+        case "strong":
+          console.log("strong");
+
+          break;
+      }
+
+      gsap.to(player.cannonBody.position, {
+        duration: 1,
+        x: mesh.position.x,
+        z: glassZ[cm2.step - 1],
+      });
+      gsap.to(player.cannonBody.position, {
+        duration: 0.4,
+        y: 12,
+      });
+    }
   }
 }
 
@@ -240,6 +272,28 @@ function draw() {
   if (cm1.mixer) {
     cm1.mixer.update(delta);
   }
+
+  // cm1.world.step(1/60, delta, 3);
+  // 화면 주사율에 따라 다르게 처리
+  let cannonStepTime = 1 / 60;
+  if (delta < 0.012) cannonStepTime = 1 / 120;
+  cm1.world.step(cannonStepTime, delta, 3);
+
+  objects.forEach((item) => {
+    if (item.cannonBody) {
+      item.mesh.position.copy(item.cannonBody.position);
+      item.mesh.quaternion.copy(item.cannonBody.quaternion);
+
+      if (item.modelMesh) {
+        item.modelMesh.position.copy(item.cannonBody.position);
+        item.modelMesh.quaternion.copy(item.cannonBody.quaternion);
+
+        if (item.name === "player") {
+          item.modelMesh.position.y += 0.15;
+        }
+      }
+    }
+  });
 
   controls.update();
 

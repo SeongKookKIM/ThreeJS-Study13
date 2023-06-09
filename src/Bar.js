@@ -9,10 +9,16 @@ export class Bar extends Stuff {
     this.geometry = geo.bar;
     this.matrial = mat.bar;
 
+    this.width = this.geometry.parameters.width;
+    this.heigh = this.geometry.parameters.height;
+    this.depth = this.geometry.parameters.depth;
+
     this.mesh = new Mesh(this.geometry, this.matrial);
     this.mesh.position.set(this.x, this.y, this.z);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     cm1.scene.add(this.mesh);
+
+    this.setCannonBody();
   }
 }
