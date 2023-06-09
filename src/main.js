@@ -11,9 +11,9 @@ import { Player } from "./Player";
 // ----- 주제: The Bridge 게임 만들기
 
 // Renderer
-// const canvas = document.querySelector("#three-canvas");
+const canvas = document.querySelector("#three-canvas");
 const renderer = new THREE.WebGLRenderer({
-  canvas: cm1.canvas,
+  canvas,
   antialias: true,
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -162,7 +162,7 @@ for (let i = 0; i < numberOfglass; i++) {
     type: glassTypes[0],
   });
   const glass2 = new Glass({
-    name: `glass-${glassTypes[0]}`,
+    name: `glass-${glassTypes[1]}`,
     x: 1,
     y: 10.5,
     z: i * glassUnitSize * 2 - glassUnitSize * 9,
@@ -178,6 +178,26 @@ const player = new Player({
   z: 13,
   rotationY: Math.PI,
 });
+
+// Raycaster
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function checkInterSects() {
+  raycaster.setFromCamera(mouse, camera);
+
+  const interSects = raycaster.intersectObjects(cm1.scene.children);
+  for (const item of interSects) {
+    checkClickedObject(item.object.name);
+    break;
+  }
+}
+function checkClickedObject(objectName) {
+  // console.log(objectName.indexOf("glass")); glass라는 이름을 가지고 있으면 숫자 0이 찍히고 없으면 -1이 찍힘
+  if (objectName.indexOf("glass") >= 0) {
+    // 유리창을 클릭했을 경우
+  }
+}
 
 // 그리기
 const clock = new THREE.Clock();
@@ -204,5 +224,10 @@ function setSize() {
 
 // 이벤트
 window.addEventListener("resize", setSize);
+canvas.addEventListener("click", (e) => {
+  mouse.x = (e.clientX / canvas.clientWidth) * 2 - 1;
+  mouse.y = -((e.clientY / canvas.clientHeight) * 2 - 1);
+  checkInterSects();
+});
 
 draw();
