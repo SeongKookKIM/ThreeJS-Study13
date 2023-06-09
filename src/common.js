@@ -1,3 +1,4 @@
+import { Material, World } from "cannon-es";
 import { Scene, BoxGeometry, MeshPhongMaterial, SphereGeometry } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
@@ -5,6 +6,12 @@ export const cm1 = {
   scene: new Scene(),
   gltfLoader: new GLTFLoader(),
   mixer: undefined,
+
+  // cannon
+  world: new World(),
+  defaultMaterial: new Material("default"),
+  glassMaterial: new Material("glass"),
+  playerMaterial: new Material("player"),
 };
 
 export const cm2 = {

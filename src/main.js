@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { cm1, cm2 } from "./common";
+import * as CANNON from "cannon-es";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Pillar } from "./Pillar";
 import { Floor } from "./Floor";
@@ -73,6 +74,37 @@ cm1.scene.add(spotLight1, spotLight2, spotLight3, spotLight4);
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+
+// 물리엔진
+cm1.world.gravity.set(0, -10, 0);
+
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  cm1.defaultMaterial,
+  cm1.defaultMaterial,
+  {
+    friction: 0.3,
+    restitution: 0.2,
+  }
+);
+const glassDefaultContactMaterial = new CANNON.ContactMaterial(
+  cm1.glassMaterial,
+  cm1.defaultMaterial,
+  {
+    friction: 1,
+    restitution: 0,
+  }
+);
+const playerGlassContactMaterial = new CANNON.ContactMaterial(
+  cm1.playerMaterial,
+  cm1.glassMaterial,
+  {
+    friction: 1,
+    restitution: 0,
+  }
+);
+cm1.world.defaultContactMaterial = defaultContactMaterial;
+cm1.world.addContactMaterial(glassDefaultContactMaterial);
+cm1.world.addContactMaterial(playerGlassContactMaterial);
 
 // 물체만들기
 const glassUnitSize = 1.2;
