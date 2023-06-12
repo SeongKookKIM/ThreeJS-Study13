@@ -33,10 +33,16 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+
+const camera2 = camera.clone();
+
 camera.position.x = -4;
 camera.position.y = 19;
 camera.position.z = 14;
-cm1.scene.add(camera);
+
+camera2.position.y = 0;
+camera2.lookAt(0, 1, 0);
+cm1.scene.add(camera, camera2);
 
 // Light
 const ambientLight = new THREE.AmbientLight(cm2.lightColor, 0.8);
@@ -252,6 +258,8 @@ function checkInterSects() {
 
 let fail = false;
 let jumping = false;
+
+let onReplay = false;
 function checkClickedObject(mesh) {
   // console.log(objectName.indexOf("glass")); glass라는 이름을 가지고 있으면 숫자 0이 찍히고 없으면 -1이 찍힘
   if (mesh.name.indexOf("glass") >= 0) {
@@ -275,6 +283,15 @@ function checkClickedObject(mesh) {
             sideLights.forEach((item) => {
               item.turnOff();
             });
+
+            setTimeout(() => {
+              onReplay = true;
+              player.cannonBody.position.y = 9;
+
+              setTimeout(() => {
+                onReplay = false;
+              }, 3000);
+            }, 2000);
           }, 700);
           break;
         case "strong":
@@ -361,7 +378,13 @@ function draw() {
 
   controls.update();
 
-  renderer.render(cm1.scene, camera);
+  if (!onReplay) {
+    renderer.render(cm1.scene, camera);
+  } else {
+    renderer.render(cm1.scene, camera2);
+    camera2.position.z = player.cannonBody.position.z;
+    camera2.position.x = player.cannonBody.position.x;
+  }
   renderer.setAnimationLoop(draw);
 }
 
