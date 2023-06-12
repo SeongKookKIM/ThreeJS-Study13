@@ -10,18 +10,25 @@ export class Player extends Stuff {
     this.height = 0.5;
     this.depth = 0.5;
 
-    this.mesh = new Mesh(
-      new BoxGeometry(this.width, this.heigh, this.depth),
-      new MeshBasicMaterial({
-        transparent: true,
-        opacity: 0,
-      })
-    );
-    this.mesh.castShadow = true;
-    this.mesh.position.set(this.x, this.y, this.z);
-    cm1.scene.add(this.mesh);
+    // this.mesh = new Mesh(
+    //   new BoxGeometry(this.width, this.heigh, this.depth),
+    //   new MeshBasicMaterial({
+    //     transparent: true,
+    //     opacity: 0,
+    //   })
+    // );
+    // this.mesh.castShadow = true;
+    // this.mesh.position.set(this.x, this.y, this.z);
+    // cm1.scene.add(this.mesh);
 
     cm1.gltfLoader.load("/models/ilbuni.glb", (glb) => {
+      // 그림자
+      glb.scene.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+        }
+      });
+
       this.modelMesh = glb.scene.children[0];
       this.modelMesh.position.set(this.x, this.y, this.z);
       this.modelMesh.rotation.set(
