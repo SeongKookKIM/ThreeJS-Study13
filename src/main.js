@@ -275,7 +275,7 @@ function checkClickedObject(mesh) {
 
       switch (mesh.type) {
         case "normal":
-          console.log("normal");
+          // console.log("normal");
           setTimeout(() => {
             fail = true;
             player.actions[0].play();
@@ -295,7 +295,7 @@ function checkClickedObject(mesh) {
           }, 700);
           break;
         case "strong":
-          console.log("strong");
+          // console.log("strong");
 
           break;
       }

@@ -1,6 +1,6 @@
 import { Mesh } from "three";
 import { Stuff } from "./Stuff";
-import { cm1, geo, mat } from "./common";
+import { cm1, geo, mat, sounds } from "./common";
 
 export class Glass extends Stuff {
   constructor(info) {
@@ -14,6 +14,7 @@ export class Glass extends Stuff {
       case "normal":
         this.matrial = mat.glass1;
         this.mass = 1;
+
         break;
       case "strong":
         this.matrial = mat.glass2;
@@ -35,5 +36,17 @@ export class Glass extends Stuff {
     cm1.scene.add(this.mesh);
 
     this.setCannonBody();
+
+    this.cannonBody.addEventListener("collide", playSound);
+
+    const sound = sounds[this.type]; // sounds.normal === sounds['normal']
+    function playSound(e) {
+      const strength = e.contact.getImpactVelocityAlongNormal();
+      if (strength > 5) {
+        sound.currentTime = 0;
+        sound.play();
+        // console.log(strength);
+      }
+    }
   }
 }
