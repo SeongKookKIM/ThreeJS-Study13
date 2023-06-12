@@ -76,23 +76,32 @@ cm1.scene.add(spotLight1, spotLight2, spotLight3, spotLight4);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
-// 물리엔진
+// 물리 엔진
 cm1.world.gravity.set(0, -10, 0);
 
 const defaultContactMaterial = new CANNON.ContactMaterial(
   cm1.defaultMaterial,
   cm1.defaultMaterial,
-  { friction: 0.3, restitution: 0.2 }
+  {
+    friction: 0.3,
+    restitution: 0.2,
+  }
 );
 const glassDefaultContactMaterial = new CANNON.ContactMaterial(
   cm1.glassMaterial,
   cm1.defaultMaterial,
-  { friction: 1, restitution: 0 }
+  {
+    friction: 1,
+    restitution: 0,
+  }
 );
 const playerGlassContactMaterial = new CANNON.ContactMaterial(
   cm1.playerMaterial,
   cm1.glassMaterial,
-  { friction: 1, restitution: 0 }
+  {
+    friction: 1,
+    restitution: 0,
+  }
 );
 cm1.world.defaultContactMaterial = defaultContactMaterial;
 cm1.world.addContactMaterial(glassDefaultContactMaterial);
@@ -106,6 +115,9 @@ const objects = [];
 // 바닥
 const floor = new Floor({
   name: "floor",
+  x: 0,
+  y: 0,
+  z: 0,
 });
 
 // 기둥
@@ -210,7 +222,7 @@ for (let i = 0; i < numberOfglass; i++) {
 const player = new Player({
   name: "player",
   x: 0,
-  y: 10.9,
+  y: 13.9,
   z: 13,
   rotationY: Math.PI,
   cannonMaterial: cm1.playerMaterial,
@@ -231,6 +243,7 @@ function checkInterSects() {
     break;
   }
 }
+
 function checkClickedObject(mesh) {
   // console.log(objectName.indexOf("glass")); glass라는 이름을 가지고 있으면 숫자 0이 찍히고 없으면 -1이 찍힘
   if (mesh.name.indexOf("glass") >= 0) {

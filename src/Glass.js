@@ -13,15 +13,16 @@ export class Glass extends Stuff {
     switch (this.type) {
       case "normal":
         this.matrial = mat.glass1;
+        this.mass = 1;
         break;
       case "strong":
         this.matrial = mat.glass2;
-
+        this.mass = 1000;
         break;
     }
 
     this.width = this.geometry.parameters.width;
-    this.heigh = this.geometry.parameters.height;
+    this.height = this.geometry.parameters.height;
     this.depth = this.geometry.parameters.depth;
 
     this.mesh = new Mesh(this.geometry, this.matrial);

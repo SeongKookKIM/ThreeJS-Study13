@@ -25,14 +25,13 @@ export class Stuff {
     this.cannonBody = new Body({
       mass: this.mass,
       position: new Vec3(this.x, this.y, this.z),
-      shape: shape,
-      material: material,
+      shape,
+      material,
     });
     this.cannonBody.quaternion.setFromAxisAngle(
       new Vec3(0, 1, 0),
       this.rotationY
     );
-
     cm1.world.addBody(this.cannonBody);
   }
 }

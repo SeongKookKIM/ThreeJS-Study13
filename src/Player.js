@@ -7,7 +7,7 @@ export class Player extends Stuff {
     super(info);
 
     this.width = 0.5;
-    this.heigh = 0.5;
+    this.height = 0.5;
     this.depth = 0.5;
 
     this.mesh = new Mesh(

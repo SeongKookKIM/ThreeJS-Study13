@@ -10,7 +10,7 @@ export class Pillar extends Stuff {
     this.matrial = mat.pillar;
 
     this.width = this.geometry.parameters.width;
-    this.heigh = this.geometry.parameters.height;
+    this.height = this.geometry.parameters.height;
     this.depth = this.geometry.parameters.depth;
 
     this.mesh = new Mesh(this.geometry, this.matrial);
