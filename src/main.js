@@ -250,6 +250,8 @@ function checkClickedObject(mesh) {
   // console.log(objectName.indexOf("glass")); glass라는 이름을 가지고 있으면 숫자 0이 찍히고 없으면 -1이 찍힘
   if (mesh.name.indexOf("glass") >= 0) {
     // 유리창을 클릭했을 경우
+    player.actions[2].stop();
+    player.actions[2].play();
 
     if (jumping || fail) return;
     if (mesh.step - 1 === cm2.step) {
@@ -262,6 +264,8 @@ function checkClickedObject(mesh) {
           console.log("normal");
           setTimeout(() => {
             fail = true;
+            player.actions[0].play();
+            player.actions[1].play();
           }, 700);
           break;
         case "strong":
